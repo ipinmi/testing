@@ -1,48 +1,26 @@
 #include "main.h"
 
-
 /**
- * _printf - produces output according to a format
- * @format: format string containing the characters and the specifiers
- * Description: this function will call the get_print() function that will
- * determine which printing function to call depending on the conversion
- * specifiers contained into fmt
- * Return: length of the formatted output string
+ * init_params - clears struct fields and reset buf
+ * @params: the parameters struct
+ * @ap: the argument pointer
+ * Return: void
  */
-int _printf(const char *format, ...)
+
+void init_params(params_t *params, va_list ap)
 {
-	int (*pfunc)(va_list, flags_t *);
-	const char *p;
-	va_list arguments;
-	flags_t flags = {0, 0, 0};
+	params->unsign = 0;
 
-	register int count = 0;
+	params->plus_flag = 0;
+	params->space_flag = 0;
+	params->hashtag_flag = 0;
+	params->zero_flag = 0;
+	params->minus_flag = 0;
 
-	va_start(arguments, format);
-	if (!format || (format[0] == '%' && !format[1]))
-		return (-1);
-	if (format[0] == '%' && format[1] == ' ' && !format[2])
-		return (-1);
-	for (p = format; *p; p++)
-	{
-		if (*p == '%')
-		{
-			p++;
-			if (*p == '%')
-			{
-				count += _putchar('%');
-				continue;
-			}
-			while (get_flag(*p, &flags))
-				p++;
-			pfunc = get_print(*p);
-			count += (pfunc)
-				? pfunc(arguments, &flags)
-				: _printf("%%%c", *p);
-		} else
-			count += _putchar(*p);
-	}
-	_putchar(-1);
-	va_end(arguments);
-	return (count);
+	params->width = 0;
+	params->precision = UINT_MAX;
+
+	params->h_modifier = 0;
+	params->l_modifier = 0;
+	(void)ap;
 }
